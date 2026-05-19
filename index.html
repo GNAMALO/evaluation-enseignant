@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Évaluation des Enseignants</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d1b2a;
+    --deep: #1b2e45;
+    --gold: #c9a84c;
+    --gold-light: #f0d080;
+    --cream: #f8f4ec;
+    --text: #1a1a2e;
+    --muted: #6b7a94;
+    --success: #2d7d5e;
+    --border: rgba(201,168,76,0.25);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    min-height: 100vh;
+    color: var(--cream);
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(201,168,76,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(201,168,76,0.05) 0%, transparent 50%);
+  }
+
+  header {
+    background: var(--deep);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .logo-line {
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 4vw, 34px);
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.2;
+  }
+  header p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 8px;
+    font-weight: 300;
+  }
+
+  main {
+    max-width: 760px;
+    margin: 48px auto;
+    padding: 0 20px 60px;
+  }
+
+  .card {
+    background: var(--deep);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+    animation: slideUp 0.5s ease both;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 36px; right: 36px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.4;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .card:nth-child(2) { animation-delay: 0.1s; }
+  .card:nth-child(3) { animation-delay: 0.2s; }
+  .card:nth-child(4) { animation-delay: 0.3s; }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--gold);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  select, textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    padding: 13px 16px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    appearance: none;
+  }
+  select:focus, textarea:focus {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.06);
+  }
+  select option { background: #1b2e45; color: var(--cream); }
+  textarea { resize: vertical; min-height: 100px; }
+
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '▾';
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gold);
+    pointer-events: none;
+    font-size: 14px;
+  }
+
+  .field { margin-bottom: 20px; }
+
+  /* Star Rating */
+  .criteria-list { display: flex; flex-direction: column; gap: 18px; }
+  .criterion { display: flex; flex-direction: column; gap: 8px; }
+  .criterion-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--cream);
+    letter-spacing: 0;
+    text-transform: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .criterion-label .icon { font-size: 16px; }
+
+  .star-row { display: flex; gap: 6px; align-items: center; }
+  .star-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 26px;
+    color: rgba(255,255,255,0.15);
+    transition: color 0.15s, transform 0.1s;
+    line-height: 1;
+    padding: 2px;
+  }
+  .star-btn:hover { transform: scale(1.15); }
+  .star-btn.active { color: var(--gold); }
+  .star-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-left: 8px;
+    min-width: 70px;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0;
+  }
+
+  /* Score badge */
+  .score-summary {
+    background: rgba(201,168,76,0.08);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .score-label { font-size: 13px; color: var(--muted); font-weight: 300; }
+  .score-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .score-value span { font-size: 16px; color: var(--muted); }
+
+  /* Submit */
+  button[type="submit"] {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--gold), #a07830);
+    border: none;
+    border-radius: 12px;
+    color: var(--navy);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    text-transform: uppercase;
+  }
+  button[type="submit"]:hover { opacity: 0.9; transform: translateY(-1px); }
+  button[type="submit"]:active { transform: translateY(0); }
+  button[type="submit"]:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .anonymous-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  /* Success */
+  #success-screen {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+  }
+  #success-screen .check {
+    font-size: 60px;
+    margin-bottom: 20px;
+    animation: pop 0.4s ease;
+  }
+  @keyframes pop {
+    0%   { transform: scale(0); }
+    70%  { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  #success-screen h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  #success-screen p { color: var(--muted); font-size: 15px; }
+  .btn-new {
+    display: inline-block;
+    margin-top: 28px;
+    padding: 12px 32px;
+    border: 1px solid var(--gold);
+    border-radius: 10px;
+    color: var(--gold);
+    background: transparent;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    letter-spacing: 1px;
+    transition: background 0.2s;
+  }
+  .btn-new:hover { background: rgba(201,168,76,0.1); }
+
+  /* Status message */
+  #status-msg {
+    display: none;
+    text-align: center;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  #status-msg.error { background: rgba(180,50,50,0.2); color: #e88; border: 1px solid rgba(180,50,50,0.3); }
+  #status-msg.loading { background: rgba(201,168,76,0.1); color: var(--gold); border: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-line">Établissement · Formulaire d'évaluation</div>
+  <h1>Évaluation des Enseignants</h1>
+  <p>Vos retours permettent d'améliorer la qualité de l'enseignement — réponses anonymes</p>
+</header>
+
+<main>
+  <div id="form-area">
+    <form id="evalForm">
+
+      <!-- Sélection filière + enseignant -->
+      <div class="card">
+        <div class="section-title">Identification</div>
+
+        <div class="field">
+          <label>Filière</label>
+          <div class="select-wrap">
+            <select id="filiere" required onchange="filterTeachers()">
+              <option value="">— Sélectionnez votre filière —</option>
+              <option>Génie Civil</option>
+              <option>Génie Logiciel</option>
+              <option>Systèmes et Réseaux</option>
+              <option>Transport et Prestations Logistiques</option>
+              <option>Communication Visuelle</option>
+              <option>Comptabilité, Contrôle et Audit</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Semestre évalué</label>
+          <div class="select-wrap">
+            <select id="semestre" required>
+              <option value="">— Sélectionnez le semestre —</option>
+              <option>Semestre 1</option>
+              <option>Semestre 2</option>
+              <option>Semestre 3</option>
+              <option>Semestre 4</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Enseignant à évaluer</label>
+          <div class="select-wrap">
+            <select id="enseignant" required>
+              <option value="">— Sélectionnez d'abord la filière —</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Critères de notation -->
+      <div class="card">
+        <div class="section-title">Critères d'évaluation</div>
+        <div class="criteria-list" id="criteria-list">
+          <!-- Generated by JS -->
+        </div>
+      </div>
+
+      <!-- Score global -->
+      <div class="score-summary" id="score-summary" style="display:none">
+        <div>
+          <div class="score-label">Score moyen</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;" id="score-text">Basé sur 0 critère</div>
+        </div>
+        <div class="score-value" id="score-display">— <span>/ 5</span></div>
+      </div>
+
+      <!-- Commentaire -->
+      <div class="card">
+        <div class="section-title">Commentaire libre</div>
+        <div class="field">
+          <label>Remarques, suggestions (optionnel)</label>
+          <textarea id="commentaire" placeholder="Partagez votre expérience avec cet enseignant…"></textarea>
+        </div>
+      </div>
+
+      <div id="status-msg"></div>
+
+      <button type="submit" id="submitBtn">Soumettre l'évaluation</button>
+      <div class="anonymous-note">
+        🔒 Votre réponse est totalement anonyme
+      </div>
+    </form>
+  </div>
+
+  <div id="success-screen">
+    <div class="check">✅</div>
+    <h2>Merci pour votre évaluation !</h2>
+    <p>Votre retour a été enregistré avec succès.<br>Il contribue à améliorer la qualité de l'enseignement.</p>
+    <button class="btn-new" onclick="resetForm()">Nouvelle évaluation</button>
+  </div>
+</main>
+
+<script>
+// ============================================================
+// CONFIGURATION — À MODIFIER
+// ============================================================
+    const GOOGLE_SCRIPT_URL = "https://hook.eu1.make.com/ycwd8a1122qwfyaef7rdks2srutyw6vw";
+// ============================================================
+
+const criteria = [
+  { id: "disponibilite",   label: "Disponibilité",                    icon: "🕐" },
+  { id: "ponctualite",     label: "Ponctualité",                      icon: "⏱️" },
+  { id: "comprehension",   label: "Clarté des explications",          icon: "💡" },
+  { id: "comportement",    label: "Comportement & respect",           icon: "🤝" },
+  { id: "maitrise",        label: "Maîtrise de la matière",           icon: "📚" },
+  { id: "methode",         label: "Méthode pédagogique",              icon: "🎯" },
+  { id: "supports",        label: "Qualité des supports de cours",    icon: "📋" },
+  { id: "interaction",     label: "Interaction & dynamisme",          icon: "⚡" },
+];
+
+const starLabels = ["", "Insuffisant", "Passable", "Bien", "Très bien", "Excellent"];
+
+const teachers = {
+  "Génie Civil": [
+    "ABDOULAYE Nouhoum","AREMUA Issaka","ATADEGNON Anani","BLAKEMA Afi","BLAKEMA Christiane",
+    "DEGBE Serge","EDOH Koami","EHLI Yawavi","IROUJOURA Yawou","KERIM Abdel Farouk",
+    "KOLANI Pakidame","MALDJA Kokou","NAYO Ezoba","PINDRA Nadjime","TEBIE Marius","AMOUZOU Kossi Ali",
+    "GNAMALO Kodjo","AMOUZOU Grace"
+  ],
+  "Génie Logiciel": [
+    "ABDOULAYE Nouhoum","AKAKPO Folly","AMOUZOU Grace","AMUZUN Paul Marie","ATADEGNON Anani",
+    "AZOUMA Mégane","BARATE Mohamed","BATABA Banaguélé","BLAKEMA Christiane","EDOH Koami",
+    "EHLI Yawavi","ETSE Ablavi","EUSEBIO Olakiitan","IROUKOURA Yawou","MALDJA Kokou",
+    "PINDRA Nadjime","SEWAVI Kokou","TCHALLA Ayékotan","TEBIE Yaovi","TETE Kodjovi",
+    "GNAMALO Kodjo","AMOUZOU Kossi Ali"
+  ],
+  "Systèmes et Réseaux": [
+    "ABDOULAYE Nouhoum","ADJONYOU Salomon","AKAKPO Folly","AMOUZOU Grace","AMUZUN Paul Marie",
+    "ATADEGNON Anani","BARATE Mohamed","BATA BA Banaguélé","BATABA Banaguélé","BLAKEMA Christiane",
+    "BOYODI Abayeh","EDOH Koami","EHLI Yawavi","ETSE Barthélémie","EUSEBIO Olaakitin",
+    "IROUKOURA Yawou","KASSALOWE Tonguimba","MALDJA Kokou","PINDRA Nadjime",
+    "TCHALLA Ayékotan","TEBIE Marius","TEBIE Yaovi","TETE Kodjovi","GNAMALO Kodjo","AMOUZOU Kossi Ali"
+  ],
+  "Transport et Prestations Logistiques": [
+    "ADELA Komlavi","AGBODJAN Eric","AGBODJAN FIOVI Edoé","AMEGA Paolo","ATADEGNON Anani",
+    "BATABA Banaguélé","BLAKEMA Afi","EDOH Koami","EHLI Yawavi","EZUNKPE Komla",
+    "GNANE Napo","IROUKOURA Yawou","KPATIPOR Kwashi","MALDJA Kokou","MIDAGBODJI Koami",
+    "NAPO KOURA Tampa","PELEI Wazi","SOUARE","TCHALLA Ayekotan","TEBIE Yaovi",
+    "TOGBENOU Apelete","GNAMALO Kodjo","AMOUZOU Kossi Ali"
+  ],
+  "Communication Visuelle": [
+    "ADELA Komlavi","ADODO Amevi","AKAKPO Folly","ATADEGNON Anani","AZOUMA Megane",
+    "BLAKEMA Afi","EDOH Koami","EHLI Yawavi","GNANE Napo","KOTOKOKU Yao","MALDJA Kokou",
+    "NAPO KOURA Gbandi","SAIBOU MIKAÏLA","SONHAYE Napo","TCHONDA Masamaésso",
+    "TEBIE Marius","TETE Kodjo","GNAMALO Kodjo","AMOUZOU Kossi Ali"
+  ],
+  "Comptabilité, Contrôle et Audit": [
+    "ABOTSITSE Edinam","ADEKPUI Komi","ADELA Koami","ADELA Komlavi","AGBODJAN FIOVI Edoé",
+    "AGBODJAN – FIOVI Edoé","AGBODJAN-FIOVI Edoé","ATADEGNON Anani","BASSONA Homgu",
+    "BATABA Banaguélé","BLAKEMA Afi","DJAVOU Christophe","EDOH Koami","EHLI Yawavi",
+    "MALDJA Kokou","MIDAGBODJI","NAPO KOURA Gbandi","TCHALLA Ayekotan",
+    "TEBIE Marius","TOGBENOU Marius","GNAMALO Kodjo","AMOUZOU Kossi Ali"
+  ]
+};
+
+// Build criteria UI
+const list = document.getElementById('criteria-list');
+criteria.forEach(c => {
+  const div = document.createElement('div');
+  div.className = 'criterion';
+  div.innerHTML = `
+    <div class="criterion-label"><span class="icon">${c.icon}</span>${c.label}</div>
+    <div class="star-row" id="stars-${c.id}">
+      ${[1,2,3,4,5].map(n => `<button type="button" class="star-btn" data-crit="${c.id}" data-val="${n}" onclick="setRating('${c.id}',${n})">★</button>`).join('')}
+      <span class="star-label" id="lbl-${c.id}"></span>
+    </div>
+  `;
+  list.appendChild(div);
+  if (c !== criteria[criteria.length - 1]) {
+    const d = document.createElement('div');
+    d.className = 'divider';
+    list.appendChild(d);
+  }
+});
+
+const ratings = {};
+criteria.forEach(c => ratings[c.id] = 0);
+
+function setRating(critId, val) {
+  ratings[critId] = val;
+  document.querySelectorAll(`#stars-${critId} .star-btn`).forEach(btn => {
+    btn.classList.toggle('active', parseInt(btn.dataset.val) <= val);
+  });
+  document.getElementById(`lbl-${critId}`).textContent = starLabels[val];
+  updateScore();
+}
+
+function updateScore() {
+  const vals = Object.values(ratings).filter(v => v > 0);
+  const el = document.getElementById('score-summary');
+  if (vals.length === 0) { el.style.display = 'none'; return; }
+  el.style.display = 'flex';
+  const avg = (vals.reduce((a,b) => a+b, 0) / vals.length).toFixed(1);
+  document.getElementById('score-display').innerHTML = `${avg} <span>/ 5</span>`;
+  document.getElementById('score-text').textContent = `Basé sur ${vals.length} critère${vals.length > 1 ? 's' : ''}`;
+}
+
+function filterTeachers() {
+  const filiere = document.getElementById('filiere').value;
+  const sel = document.getElementById('enseignant');
+  sel.innerHTML = '<option value="">— Sélectionnez un enseignant —</option>';
+  if (filiere && teachers[filiere]) {
+    const sorted = [...new Set(teachers[filiere])].sort();
+    sorted.forEach(name => {
+      const opt = document.createElement('option');
+      opt.value = name; opt.textContent = name;
+      sel.appendChild(opt);
+    });
+  }
+}
+
+document.getElementById('evalForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const filiere = document.getElementById('filiere').value;
+  const semestre = document.getElementById('semestre').value;
+  const enseignant = document.getElementById('enseignant').value;
+  const commentaire = document.getElementById('commentaire').value;
+
+  if (!filiere || !semestre || !enseignant) {
+    showStatus('Veuillez remplir tous les champs obligatoires.', 'error');
+    return;
+  }
+  const ratedCount = Object.values(ratings).filter(v => v > 0).length;
+  if (ratedCount < criteria.length) {
+    showStatus(`Veuillez noter tous les critères (${ratedCount}/${criteria.length} notés).`, 'error');
+    return;
+  }
+
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  showStatus('Envoi en cours…', 'loading');
+
+  const payload = {
+    filiere, semestre, enseignant, commentaire,
+    date: new Date().toLocaleDateString('fr-FR'),
+    heure: new Date().toLocaleTimeString('fr-FR'),
+    ...ratings
+  };
+
+  try {
+    if (GOOGLE_SCRIPT_URL === "VOTRE_URL_APPS_SCRIPT_ICI") {
+      // Mode démo — affiche les données dans la console
+      console.log("Données à envoyer:", payload);
+      await new Promise(r => setTimeout(r, 800));
+      showSuccess();
+    } else {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      showSuccess();
+    }
+  } catch (err) {
+    showStatus("Erreur réseau. Vérifiez l'URL du script et votre connexion.", 'error');
+    submitBtn.disabled = false;
+  }
+});
+
+function showStatus(msg, type) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = type;
+  el.style.display = 'block';
+}
+
+function showSuccess() {
+  document.getElementById('form-area').style.display = 'none';
+  document.getElementById('success-screen').style.display = 'block';
+}
+
+function resetForm() {
+  document.getElementById('evalForm').reset();
+  criteria.forEach(c => {
+    ratings[c.id] = 0;
+    document.querySelectorAll(`#stars-${c.id} .star-btn`).forEach(b => b.classList.remove('active'));
+    document.getElementById(`lbl-${c.id}`).textContent = '';
+  });
+  document.getElementById('score-summary').style.display = 'none';
+  document.getElementById('status-msg').style.display = 'none';
+  document.getElementById('submitBtn').disabled = false;
+  filterTeachers();
+  document.getElementById('success-screen').style.display = 'none';
+  document.getElementById('form-area').style.display = 'block';
+}
+</script>
+</body>
+</html>
