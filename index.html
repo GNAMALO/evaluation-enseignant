@@ -405,7 +405,7 @@
 // ============================================================
 // CONFIGURATION — À MODIFIER
 // ============================================================
-const GOOGLE_SCRIPT_URL = "https://hook.eu1.make.com/ycwd8a1122qwfyaef7rdks2srutyw6vw";
+    const GOOGLE_SCRIPT_URL = "https://hook.eu1.make.com/ycwd8a1122qwfyaef7rdks2srutyw6vw";
 // ============================================================
 
 const criteria = [
@@ -555,12 +555,13 @@ document.getElementById('evalForm').addEventListener('submit', async function(e)
       await new Promise(r => setTimeout(r, 800));
       showSuccess();
     } else {
-      const formData = new FormData();
-      Object.entries(payload).forEach(([key, val]) => formData.append(key, val));
+      const params = new URLSearchParams();
+      Object.entries(payload).forEach(([key, val]) => params.append(key, String(val)));
       await fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
         mode: "no-cors",
-        body: formData
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params.toString()
       });
       showSuccess();
     }
