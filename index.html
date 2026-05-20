@@ -405,7 +405,7 @@
 // ============================================================
 // CONFIGURATION — À MODIFIER
 // ============================================================
-    const GOOGLE_SCRIPT_URL = "https://hook.eu1.make.com/ycwd8a1122qwfyaef7rdks2srutyw6vw";
+const GOOGLE_SCRIPT_URL = "https://hook.eu1.make.com/ycwd8a1122qwfyaef7rdks2srutyw6vw";
 // ============================================================
 
 const criteria = [
@@ -549,12 +549,6 @@ document.getElementById('evalForm').addEventListener('submit', async function(e)
   };
 
   try {
-    if (GOOGLE_SCRIPT_URL === "https://hook.eu1.make.com/ycwd8a1122qwfyaef7rdks2srutyw6vw") {
-      // Mode démo — affiche les données dans la console
-      console.log("Données à envoyer:", payload);
-      await new Promise(r => setTimeout(r, 800));
-      showSuccess();
-    } else {
       const params = new URLSearchParams();
       Object.entries(payload).forEach(([key, val]) => params.append(key, String(val)));
       await fetch(GOOGLE_SCRIPT_URL, {
@@ -564,7 +558,6 @@ document.getElementById('evalForm').addEventListener('submit', async function(e)
         body: params.toString()
       });
       showSuccess();
-    }
   } catch (err) {
     showStatus("Erreur réseau. Vérifiez l'URL du script et votre connexion.", 'error');
     submitBtn.disabled = false;
